@@ -27,7 +27,6 @@ class CreateEventsTable extends Migration {
 			$table->integer('rating')->nullable();
 			$table->string('location')->nullable();
 			$table->boolean('status')->nullable();
-			$table->boolean('for_revision')->nullable();
 			$table->mediumText('notes')->nullable();
 			$table->timestamps();
 			$table->string('user_id', 36);

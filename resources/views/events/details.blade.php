@@ -32,7 +32,7 @@
                                 <img src="/images/events/{{$article->image}}" class="img-responsive"/>
                             @endif
                             <h2>{{$article->title}}</h2>
-                            <span class="blog-date">{{ date("F d, Y l", strtotime($article->created_at)) }} / {{$count}} Comments / By {{$article->author->first_name}}</span>
+                            <span class="blog-date">{{ date("F d, Y l", strtotime($article->created_at)) }} / {{$count}} Comments / By {{$article->author->first_name}}  / {{$article->attendee->count()}} Attendees</span>
                             {!! html_entity_decode($article->body) !!}                                        
                         </div>
                         

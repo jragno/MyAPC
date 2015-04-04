@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        @section('head')
+    	@section('head')
         <!-- META SECTION -->
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/front/img/apclogo.ico" type="image/x-icon" /> 
         <!-- END META SECTION -->
         
         <link rel="stylesheet" type="text/css" href="/front/css/revolution-slider/extralayers.css" media="screen" />
@@ -29,9 +28,10 @@
                     <div class="search">
                         <div class="search-button"><span class="fa fa-search"></span></div>
                         <div class="search-container animated fadeInDown">
-                            <form action="#" method="post">
+                            <form role="form" action="/searchresults" method="POST">
                                 <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Search..."/>
+                                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                    <input type="text" name="input" required class="form-control" placeholder="Search..."/>
                                     <div class="input-group-btn">
                                         <button class="btn btn-primary"><span class="fa fa-search"></span></button>
                                     </div>
@@ -63,6 +63,11 @@
                                 <li><a href="http://www.apc.edu.ph/flavio/Apps/StudentGrades.php" target="_blank">Grades Viewer</a></li>
                                 <li><a href="http://www.apc.edu.ph/flavio/Apps/StudentAssessment.php" target="_blank">Registration/ Assessment Form Viewer</a></li>
                                 <li><a href="http://www.apc.edu.ph/flavio/Apps/SubjectOffering.php" target="_blank">Master List of Subject Offerings Viewer</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a style="cursor: pointer;">School Directory</a>
+                            <ul>
                                 <li><a href="/directory">Office Directory</a></li>
                                 <li><a href="/bus">Bus Schedules</a></li>
                             </ul>
@@ -71,7 +76,7 @@
                         @if(Auth::guest())                        
                             <li><a href="/auth/register">Register</a></li>
                             <li><a href="/auth/login">Login</a></li>                            
-                        @else
+                    	@else
                             <li>
                                 <a style="cursor: pointer;">{{ Auth::user()->first_name }}</a>
                                 <ul>
@@ -83,12 +88,12 @@
                                     <li><a href="/auth/logout">Logout</a></li>                                    
                                 </ul>
                             </li>
-                        @endif
+                    	@endif
                     </ul>                                       
                 </div>                
             </div>
             
-            @yield('content')
+     		@yield('content')
             
             <div class="page-footer">
                 <div class="page-footer-wrap bg-dark-gray">
@@ -111,7 +116,6 @@
                                     @if(Auth::check())                                    
                                         <a href="/announcements">Announcements</a>
                                     @endif
-                                    <a href="/dining">Dining</a>
                                     <a href="/organizations">Organizations</a>
 
                                 </div>                                

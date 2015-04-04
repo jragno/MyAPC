@@ -21,6 +21,7 @@
     <div class="page-content-wrap">        
         <div class="row">
             <!-- NEWS WIDGET -->
+            @include('flash::message')
             @foreach($nposted as $npost)
                 <div class="col-md-4">
                     <div class="panel panel-default">                            
@@ -34,13 +35,37 @@
                         </div>
                         <div class="panel-body">
                             <h3><a href="/news/{{$npost->id}}">{{$npost->title}}</a></h3>
-                            <div class="post-date"><span class="fa fa-calendar"></span> {{ date("F d, Y", strtotime($npost->created_at)) }} at {{ date("g:ha",strtotime($npost->created_at)) }} / {{$npost->comments->count()}} Comments / by {{$npost->author}}</div>
+                            <div class="post-date"><span class="fa fa-calendar"></span> {{ date("F d, Y", strtotime($npost->created_at)) }} at {{ date("g:ha",strtotime($npost->created_at)) }} | <span class="fa fa-user"></span> by {{$npost->author}}</div>
                             <p>{!!html_entity_decode($npost->read_more)!!}</p>
                             <a href="/news/{{$npost->id}}" class="btn btn-default btn-rounded pull-right">Read more &RightArrow;</a>
                         </div>
-                        <div class="panel-footer text-muted">
-                            <span class="fa fa-clock-o"></span> 3d ago &nbsp;&nbsp;&nbsp;
-                            <span class="fa fa-comment-o"></span> {{$npost->comments->count()}}
+                        <div class="panel-footer">
+                            <span class="fa fa-clock-o"></span> {{\Carbon\Carbon::createFromTimeStamp(strtotime($npost->created_at))->diffForHumans()}} 
+                            &nbsp; <span class="fa fa-comment-o"></span> {{$npost->comments->count()}}
+                            || &nbsp;&nbsp;
+                            <a href="/news/update/{{$npost->id}}" class="info"><span class="fa fa-edit "></span></a>
+                            &nbsp;&nbsp;<a class="mb-control danger" data-box="#mb-delete"><span class="glyphicon glyphicon-remove-circle "></span></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="message-box message-box-warning animated fadeIn" id="mb-delete">
+                    <div class="mb-container">
+                        <div class="mb-middle">
+                            <div class="mb-title"><span class="fa fa-sign-out"></span>Are you sure you want to <strong>delete</strong> ?</div>
+                            <div class="mb-content">
+                                <p>Are you sure you want to delete?</p>                    
+                                <p>Press No if you want to cancel. Press Yes to delete.</p>
+                            </div>
+                            <div class="mb-footer">
+                                <div class="pull-right">
+                                    <form class="form-horizontal" role="form" method="POST" action="/news/posted" enctype="multipart/form-data">
+                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                        <input type="hidden" name="id" value="{{$npost->id}}" />
+                                        <button class="btn btn-success btn-lg">Yes</button>
+                                        <button class="btn btn-default btn-lg mb-control-close">No</button>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

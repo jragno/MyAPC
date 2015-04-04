@@ -25,7 +25,6 @@ class CreatePostsTable extends Migration {
 			$table->string('read_more')->nullable();
 			$table->integer('rating')->nullable();
 			$table->boolean('status')->nullable();
-			$table->boolean('for_revision')->nullable();
 			$table->mediumText('notes')->nullable();
 			$table->timestamps();
 			$table->integer('module_id')->unsigned()->nullable();			

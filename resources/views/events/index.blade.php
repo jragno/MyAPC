@@ -36,7 +36,7 @@
                                     </div>
                                     <div class="blog-data">
                                         <h5><a href="/events/details/{{$event->id}}">{{$event->title}}</a></h5>
-                                        <span class="blog-date">{{ date("F d, Y l", strtotime($event->created_at)) }} / {{$event->comments->count()}} Comments / By {{$event->author->first_name}}</span>
+                                        <span class="blog-date">{{ date("F d, Y l", strtotime($event->created_at)) }} / {{$event->comments->count()}} Comments / By {{$event->author->first_name}} / {{$event->attendee->count()}} Attendees</span>
                                         {!! html_entity_decode($event->read_more) !!}  
                                     </div>
                                 </div>                                

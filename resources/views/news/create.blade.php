@@ -69,10 +69,9 @@
                             
                             <div class="form-group">
                                 <div class="block">                                            
-                                    <textarea name="body" class="summernote" placeholder="huhuhu"></textarea>
+                                    <textarea name="body" class="summernote"></textarea>
                                 </div>
                             </div>
-
                         </div>
                         <div class="panel-footer text-center">                                 
                             <button class="btn btn-primary pull ">Submit</button>
@@ -82,6 +81,4 @@
             </div>
         </div>  
     </div> 
-
-
 @stop

@@ -12,6 +12,7 @@ use App\Post as Post;
 use App\Event as Event;
 use App\Comment as Comment;
 use App\Registration as Registration;
+use App\Attendee as Attendee;
 use Laracasts\Flash\Flash;
 use Webpatser\Uuid\Uuid;
 use Auth;
@@ -26,18 +27,50 @@ class AdminController extends Controller {
 		{
 			$count = User::where('status', '=', '1')->where('user_type_id', '!=', '1')->count();
 			$countp = User::where('status', '=', '0')->count();
-			$countn = Post::where('status', '=', '0')->where('module_id', '=', '1')->count();
-			$counte = Event::where('status', '=', '0')->count();
+			$countn = Post::where('module_id', '=', '1')->where(function($query){
+					$query->where('status', '=', '0');
+					$query->orWhere('status', '=', '2');
+					$query->orWhere('status', '=', '3');
+				})->count();
+			$counte = Event::where('status', '=', '0')->orWhere('status', '=', '2')->orWhere('status', '=', '3')->count();
 		}
 		else
 		{
 			$org = Post::where('user_id', Auth::user()->id)->where('module_id', '=', '3')->pluck('id');
 			$count = Registration::where('status', '=', '1')->where('post_id', $org)->count();
 			$countp = Registration::where('status', '=', '0')->where('post_id', $org)->count();
-			$countn = Post::where('status', '=', '0')->where('module_id', '=', '1')->where('user_id', Auth::user()->id)->count();
-			$counte = Event::where('status', '=', '0')->where('user_id', Auth::user()->id)->count();
+			$countn = Post::where('module_id', '=', '1')->where('user_id', Auth::user()->id)->where(function($query){
+					$query->where('status', '=', '0');
+					$query->orWhere('status', '=', '2');
+					$query->orWhere('status', '=', '3');
+				})->count();
+			$counte = Event::where('user_id', Auth::user()->id)->where('status', '=', '0')->orWhere('status', '=', '2')->orWhere('status', '=', '3')->count();
 		}
 		return view('admin.index', compact('count', 'countp', 'countn', 'counte'));
+	}
+
+	public function search()
+	{
+		$keyword = Input::get('keyword');
+		if(Auth::user()->user_type_id == '1')
+		{
+			$posts = Post::where('title', 'LIKE', '%'.$keyword.'%')->orWhere('body', 'LIKE', '%'.$keyword.'%')->orWhere('author', 'LIKE', '%'.$keyword.'%')->orderBy('created_at', 'desc')->get();
+			$events = Event::where('title', 'LIKE', '%'.$keyword.'%')->orWhere('body', 'LIKE', '%'.$keyword.'%')->orderBy('created_at', 'desc')->get();
+		}
+		else
+		{
+			$posts = Post::where('user_id', Auth::user()->id)->where(function($query) use ($keyword){
+					$query->where('title', 'LIKE', '%'.$keyword.'%');
+					$query->orWhere('body', 'LIKE', '%'.$keyword.'%');
+					$query->orWhere('author', 'LIKE', '%'.$keyword.'%');
+				})->orderBy('created_at', 'desc')->get();
+			$events = Event::where('user_id', Auth::user()->id)->where(function($query) use ($keyword){
+					$query->where('title', 'LIKE', '%'.$keyword.'%');
+					$query->orWhere('body', 'LIKE', '%'.$keyword.'%');
+				})->orderBy('created_at', 'desc')->get();
+		}
+		
+		return view('admin.search', compact('posts', 'events', 'keyword'));
 	}
 
 	// news
@@ -60,11 +93,19 @@ class AdminController extends Controller {
 		$npending;
 		if(Auth::user()->user_type_id == '1')
 		{
-			$npending = Post::where('status', '=', '0')->orWhere('status', '=', '2')->orWhere('status', '=', '3')->where('module_id', '=', '1')->orderBy('created_at', 'desc')->get();
+			$npending = Post::where('module_id', '=', '1')->where(function($query){
+					$query->where('status', '=', '0');
+					$query->orWhere('status', '=', '2');
+					$query->orWhere('status', '=', '3');
+				})->orderBy('created_at', 'desc')->get();
 		}
 		else
 		{
-			$npending = Post::where('status', '=', '0')->orWhere('status', '=', '2')->orWhere('status', '=', '3')->where('module_id', '=', '1')->where('user_id', Auth::user()->id)->orderBy('created_at', 'desc')->get();	
+			$npending = Post::where('module_id', '=', '1')->where(function($query){
+					$query->where('status', '=', '0');
+					$query->orWhere('status', '=', '2');
+					$query->orWhere('status', '=', '3');
+				})->where('user_id', Auth::user()->id)->orderBy('created_at', 'desc')->get();	
 		}
 		return view('news.pending', compact('npending'));		
 	}
@@ -92,7 +133,6 @@ class AdminController extends Controller {
 		}		
 
 		$body = Input::get('body');
-		$read_more = Input::get('body'); 
 		$body = HTML::entities($body);
 
 		$news = $request->all();
@@ -102,7 +142,7 @@ class AdminController extends Controller {
 			$news['image1'] = $filename1;
 		}
 		$news['body'] = $body;
-		$news['read_more'] = (strlen($read_more>140)) ? subtr($read_more, 0, 140) : $read_more;
+		$news['read_more'] = (strlen($body>140)) ? subtr($body, 0, 140) : $body;
         $news['module_id'] = '1';
         $news['user_id'] = Auth::user()->id;
 
@@ -149,29 +189,27 @@ class AdminController extends Controller {
 		$news['body'] = $body;
 		$news['read_more'] = (strlen($body>140)) ? subtr($body, 0, 140) : $body;
 
-        $status = Input::get('status');
-
-		if($status == '2')
-		{
-			$news['status'] = '2';			
-		}
-		elseif($status == '3')
-		{
-			$news['status'] = '3';			
-		}
-		elseif($status == '0')
-		{
-			$news['status'] = '0';
-		}
-		elseif($status == '1')
-		{
-			$news['status'] = '1';
-		}
-
 		$article = Post::find($id)->update($news);
 
 		Flash::message('News updated!');
         return Redirect::back();
+	}
+
+	public function newspendel()
+	{
+		$id = Input::get('id');
+		Post::find($id)->delete();
+		Flash::message('News deleted!');
+		return redirect('/news/pending');		
+	}
+
+	public function newspostdel()
+	{
+		$id = Input::get('id');
+		Comment::where('post_id', $id)->delete();
+		Post::find($id)->delete();
+		Flash::message('News deleted!');
+		return redirect('/news/posted');		
 	}
 
 
@@ -281,31 +319,28 @@ class AdminController extends Controller {
 		$event['body'] = $body;
 		$event['read_more'] = (strlen($body>140)) ? subtr($body, 0, 140) : $body;
 
-        $status = Input::get('status');
-
-		if($status == '2')
-		{
-			$event['for_revision'] = '1';
-			$event['status'] = '0';			
-		}
-		elseif($status == '3')
-		{
-			$event['for_revision'] = '0';
-			$event['status'] = '0';			
-		}
-		elseif($status == '0')
-		{
-			$event['status'] = '0';
-		}
-		elseif($status == '1')
-		{
-			$event['status'] = '1';
-		}
-
 		$article = Event::find($id)->update($event);
 
 		Flash::message('Event updated!');
         return Redirect::back();
+	}
+
+	public function eventpendel()
+	{
+		$id = Input::get('id');
+		Event::find($id)->delete();
+		Flash::message('Event deleted!');
+		return redirect('/events/pending');		
+	}
+
+	public function eventpostdel()
+	{
+		$id = Input::get('id');
+		Attendee::where('event_id', $id)->delete();
+		Comment::where('event_id', $id)->delete();
+		Event::find($id)->delete();
+		Flash::message('Event deleted!');
+		return redirect('/events/posted');		
 	}
 
 
@@ -393,6 +428,15 @@ class AdminController extends Controller {
         return Redirect::back();
 	}
 
+	public function adel()
+	{
+		$id = Input::get('id');
+		Comment::where('post_id', $id)->delete();
+		Post::find($id)->delete();
+		Flash::message('Announcement deleted!');
+		return redirect('/announcements/list');		
+	}
+
 
 	// org
 	public function orglist()
@@ -409,7 +453,7 @@ class AdminController extends Controller {
 
 	public function orgcreate()
 	{
-		$orgs = User::where('user_type_id', '=', '2')->lists('first_name', 'id');
+		$orgs = User::where('user_type_id', '=', '2')->lists('last_name', 'id');
 		return view('org.create', compact('orgs'));		
 	}
 
@@ -445,7 +489,7 @@ class AdminController extends Controller {
 	public function orgupdate($id)
 	{
 		$update = Post::find($id);
-		$orgs = User::where('user_type_id', '=', '2')->lists('first_name', 'id');
+		$orgs = User::where('user_type_id', '=', '2')->lists('last_name', 'id');
 		return view('org.update', compact('update', 'orgs'));		
 	}
 
@@ -474,6 +518,15 @@ class AdminController extends Controller {
 
 		Flash::message('Organization updated!');
         return Redirect::back();
+	}
+
+	public function orgdel()
+	{
+		$id = Input::get('id');
+		Registration::where('post_id', $id)->delete();
+		Post::find($id)->delete();
+		Flash::message('Organization deleted!');
+		return redirect('/org/list');		
 	}
 
 	

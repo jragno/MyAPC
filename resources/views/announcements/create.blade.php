@@ -69,7 +69,7 @@
                             
                             <div class="form-group">
                                 <div class="block">                                            
-                                    <textarea name="body" class="summernote" placeholder="huhuhu"></textarea>
+                                    <textarea name="body" class="summernote"></textarea>
                                 </div>
                             </div>
 

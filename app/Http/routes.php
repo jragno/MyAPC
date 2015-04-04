@@ -15,7 +15,8 @@ Route::get('/', 'HomeController@index');
 Route::get('/bus', 'HomeController@bus');
 Route::get('/directory', 'HomeController@directory');
 Route::get('/account', 'HomeController@account');
-Route::get('/account/update', 'HomeController@userstore');
+Route::post('/account/update', 'HomeController@userupdate');
+Route::get('/account/update', 'HomeController@update');
 Route::get('/applications', ['middleware' => 'auth', 'uses' => 'HomeController@applications']);
 
 Route::get('/news', 'NewsController@index');

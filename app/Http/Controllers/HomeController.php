@@ -1,13 +1,16 @@
 <?php namespace App\Http\Controllers;
-
-use App\Http\Requests\UpdateUser;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
+use App\Http\Requests\UpdateUser;
+use App\Http\Requests\UpdateUserADP;
+use App\Http\Requests\UpdateUserADE;
+use App\Http\Controllers\Controller;
 
+use App\Post as Post;
+use App\Event as Event;
 use App\User as User;
 use Laracasts\Flash\Flash;
+use Auth;
 use Redirect;
-
 class HomeController extends Controller {
 
 	/*
@@ -52,15 +55,47 @@ class HomeController extends Controller {
 		return view('home.account');
 	}
 
-		public function updateuser($id)
+	public function applications()
 	{
-		$update = User::find($id);
-		return view('home.update', compact('update'));
+		return view('home.applications');
 	}
 
-	public function userstore(UpdateUser $request, $id)
+	public function search()
 	{
-		if(Input::file('image1') != null)
+		$input = Input::get('input');
+		if(Auth::guest())
+		{
+			$posts = Post::where('status', '=', '1')->where('module_id', '!=', '2')->where(function($query) use ($input){
+					$query->where('title', 'LIKE', '%'.$input.'%');
+					$query->orWhere('body', 'LIKE', '%'.$input.'%');
+					$query->orWhere('author', 'LIKE', '%'.$input.'%');
+				})->orderBy('created_at', 'desc')->get();
+		}
+		else
+		{
+			$posts = Post::where('status', '=', '1')->where(function($query) use ($input){
+					$query->where('title', 'LIKE', '%'.$input.'%');
+					$query->orWhere('body', 'LIKE', '%'.$input.'%');
+					$query->orWhere('author', 'LIKE', '%'.$input.'%');
+				})->orderBy('created_at', 'desc')->get();
+		}
+		
+		$events = Event::where('status', '=', '1')->where(function($query) use ($input){
+				$query->where('title', 'LIKE', '%'.$input.'%');
+				$query->orWhere('body', 'LIKE', '%'.$input.'%');
+			})->orderBy('created_at', 'desc')->get();
+		
+		
+		return view('home.search', compact('posts', 'events', 'input'));
+	}
+	public function update()
+	{
+		return view('home.update');
+	}
+
+	public function userupdate(UpdateUser $request)
+	{
+		if(Input::file('image') != null)
 		{
 			$image = Input::file('image');
 			$filename = $image->getClientOriginalName();
@@ -68,25 +103,19 @@ class HomeController extends Controller {
 		}	
 		else
 		{
-			$filename = User::where('id', $id)->pluck('image');
+			$filename = User::where('id', Auth::user()->id)->pluck('image');
 		}	
 
-		$fname = Input::get('fistname');
-		$lname = Input::get('lastname');
-		$mi = Input::get('middle');
-		$course = Input::get('crs');
-		$contact = Input::get('cntc');
-
-		$update = $request->all();
-		$uuser = User::update($update);
+		$userpd = $request->all();
+		
+		if(Input::file('image') != null)
+		{
+			$userpd->image = $filename;
+		}
+		$update = User::find(Auth::user()->id)->update($userpd);
 
 		Flash::message('User updated!');
-        return Redirect::back();
-	}
-
-	public function applications()
-	{
-		return view('home.applications');
+        return redirect('/account');
 	}
 
 }

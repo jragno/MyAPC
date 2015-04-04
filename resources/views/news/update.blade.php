@@ -16,12 +16,7 @@
         <li><a>News</a></li>
         <li><a href="/news/{{$update->id}}">{{$update->title}}</a></li>
         <li class="active">Update</li>
-    </ul>
-    
-    <!-- PAGE TITLE -->
-    <div class="page-title">                    
-        <h2>News - Update</h2>
-    </div>               
+    </ul>              
     
     <!-- PAGE CONTENT WRAPPER -->
     <div class="page-content-wrap">        
@@ -78,8 +73,15 @@
                                         
                                         <div class="form-group">
                                             <label class="col-md-3 control-label">Image</label>
-                                            <div class="col-md-9">                               
-                                                <input type="file" name="image1" id="filename" title="Browse file"/>
+                                            <div class="col-md-3">
+                                                <img src="/images/news/{{$update->image1}}" class="img-responsive img-text"/>
+                                            </div>
+                                        </div>    
+                                        
+                                        <div class="form-group">
+                                            <div class="col-md-3"></div>
+                                            <div class="col-md-9 col-xs-12">
+                                                    <input type="file" name="image1" class="file" data-preview-file-type="image" file-preview-image="/images/news/{{$update->image1}}"/>                    
                                             </div>
                                         </div>                                
                                     </div>
@@ -89,11 +91,32 @@
                                             <div class="form-group">
                                                 <label class="col-md-3 control-label">Post Status</label>
                                                 <div class="col-md-9">                                                                     
-                                                    <select class="form-control" name="status">
-                                                        <option value="0">Pending</option>
+                                                    <select class="form-control select" name="status">
+                                                        @if($update->status =='0')
+                                                        <option value="0" selected="selected">Pending</option>
                                                         <option value="1">Approved</option>
                                                         <option value="2">For Revision</option>
                                                         <option value="3">Rejected</option>
+
+                                                        @elseif($update->status =='1')
+                                                        <option value="1" selected="selected">Approved</option>
+                                                        <option value="0">Pending</option>
+                                                        <option value="2">For Revision</option>
+                                                        <option value="3">Rejected</option>
+
+                                                        @elseif($update->status =='2')
+                                                        <option value="2" selected="selected">For Revision</option>
+                                                        <option value="0">Pending</option>
+                                                        <option value="1">Approved</option>
+                                                        <option value="3">Rejected</option>
+
+                                                        @elseif($update->status =='3')
+                                                        <option value="3" selected="selected">Rejected</option>
+                                                        <option value="0">Pending</option>
+                                                        <option value="1">Approved</option>
+                                                        <option value="2">For Revision</option>
+
+                                                        @endif
                                                     </select>
                                                 </div>
                                             </div> 
@@ -101,6 +124,29 @@
                                                 <label class="col-md-3 control-label">Notes</label>
                                                 <div class="col-md-9">
                                                     <textarea name="notes" class="form-control" style="resize: none;" rows="5">{{{$update->notes}}}</textarea>
+                                                </div>
+                                            </div>                               
+                                        </div>
+                                     @else
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="col-md-3 control-label">Post Status</label>
+                                                <div class="col-md-9">                                                                     
+                                                        @if($update->status =='0')
+                                                        <span class="label label-primary label-form">Pending</span>
+                                                        @elseif($update->status =='1')
+                                                        <span class="label label-info label-form">Approved</span>
+                                                        @elseif($update->status =='2')
+                                                        <span class="label label-warning label-form">For Revision</span>
+                                                        @elseif($update->status =='3')
+                                                        <span class="label label-danger label-form">Rejected</span>
+                                                        @endif
+                                                </div>
+                                            </div> 
+                                            <div class="form-group">
+                                                <label class="col-md-3 control-label">Notes</label>
+                                                <div class="col-md-9">
+                                                    <textarea name="notes" class="form-control" style="resize: none;" rows="5" readonly>{{{$update->notes}}}</textarea>
                                                 </div>
                                             </div>                               
                                         </div>

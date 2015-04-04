@@ -15,8 +15,10 @@
     
     <!-- PAGE TITLE -->
     <div class="page-title"> 
-        <h2>Organizations</h2>                          
-        <h2><a href="/org/update/{{$org->id}}">Edit</a></h2>                
+        <h2>Organizations</h2>                 
+        <span class="pull-right">
+            <a href="/org/update/{{$org->id}}"><button class="btn btn-info"><span class="fa fa-pencil-square-o"></span>Edit</button></a>
+        </span>              
     </div>               
     
     <!-- PAGE CONTENT WRAPPER -->

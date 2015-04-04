@@ -25,7 +25,9 @@
         @else
             <h2>News | Pending</h2>
         @endif                   
-        <h2><a href="/news/update/{{$article->id}}">Edit</a></h2>                
+        <span class="pull-right">
+            <a href="/news/update/{{$article->id}}"><button class="btn btn-info"><span class="fa fa-pencil-square-o"></span>Edit</button></a>
+        </span>               
     </div>               
     
     <!-- PAGE CONTENT WRAPPER -->
@@ -74,9 +76,9 @@
                             @else
                                 <h3 class="push-down-20">Admin Notes</h3>
                                 <p>{{$article->notes}}</p>
-                                @if($article->for_revision == '0' || $article->for_revision == '1')
+                                @if($article->status == '2' || $article->status == '3')
                                     <p><b>Status:</b>
-                                    @if($article->for_revision == '1')
+                                    @if($article->status == '2')
                                         For revision
                                     @else
                                         Rejected

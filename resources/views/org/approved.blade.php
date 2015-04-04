@@ -14,72 +14,12 @@
     
     <!-- PAGE TITLE -->
     <div class="page-title">                    
-        <h2>Approved Applicants</h2>
+        <h2>Approved</h2>
     </div>               
     
     <!-- PAGE CONTENT WRAPPER -->
     <div class="page-content-wrap">        
         <div class="row">
-               <div class="col-md-12">
-                    <div class="panel panel-default">
-                        <div class="panel-body">
-                            <p>Search for a member. Make specific searches using the filters.</p>
-                            <form class="form-horizontal">
-                                <div class="form-group">
-                                    <div class="col-md-8">
-                                        <div class="input-group">
-                                            <div class="input-group-addon">
-                                                <span class="fa fa-search"></span>
-                                            </div>
-                                            <input type="text" class="form-control" placeholder="Who are you looking for?"/>
-                                            <div class="input-group-btn">
-                                                <button class="btn btn-primary">Search</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <button class="btn btn-info btn-block">Search</button>
-                                    </div>
-                                </div>
-                            </form>                                    
-                        </div>
-                    </div>
-                    
-                </div>
-            </div>
-         </div>         
-
-         <div class="row">
-                @include('flash::message')                                                                     
-                @foreach($approved as $app)            
-              <div class="col-md-3">
-                    <!-- CONTACT ITEM -->
-
-                    <div class="panel panel-default">
-                        <div class="panel-body profile">
-                            <div class="profile-image">
-                                <img src="{{ asset('/images/users/' . $app->member->image) }}" alt="Nadia Ali"/>
-                            </div>
-                            <div class="profile-data">
-                                <div class="profile-data-name">{{$app->member->first_name}} {{$app->member->mi}} {{$app->member->last_name}}</div>
-                                <div class="profile-data-title">{{$app->member->course}}</div>
-                            </div>
-                            <div class="profile-controls">
-                                <a href="#" class="profile-control-left"><span class="fa fa-info"></span></a>
-                                <a href="#" class="profile-control-right"><span class="fa fa-phone"></span></a>
-                            </div>
-                        </div>                                
-                        <div class="panel-body">                                    
-                            <div class="contact-info">
-                                <p><small>Mobile</small><br/>{{$app->member->contact}}</p>
-                                <p><small>Email</small><br/>{{$app->member->email}}</p>
-                                <p><small>Address</small><br/>123 45 Street San Francisco, CA, USA</p>                                   
-                            </div>
-                        </div>                                
-                    </div>
-                    <!-- END CONTACT ITEM -->
-                </div>
-                 @endforeach           
             <div class="col-md-1"></div>                
 
             <div class="col-md-10">                

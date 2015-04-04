@@ -25,7 +25,9 @@
         @else
             <h2>Events | Pending</h2>
         @endif                   
-        <h2><a href="/events/update/{{$article->id}}">Edit</a></h2>                
+        <span class="pull-right">
+            <a href="/events/update/{{$article->id}}"><button class="btn btn-info"><span class="fa fa-pencil-square-o"></span>Edit</button></a>
+        </span>              
     </div>               
     
     <!-- PAGE CONTENT WRAPPER -->
@@ -45,7 +47,9 @@
                                 @if($article->status == '1')
                                     {{$count}} Comments /
                                 @endif 
-                                by {{$article->author->first_name}}</div>
+                                by {{$article->author->first_name}} / 
+                                {{$article->attendee->count()}} Attendees
+                            </div>
                             <div class="post-text"> 
                                 @if($article->image != null)
                                     <img src="/images/events/{{$article->image}}" class="img-text"/>
@@ -74,9 +78,9 @@
                             @else
                                 <h3 class="push-down-20">Admin Notes</h3>
                                 <p>{{$article->notes}}</p>
-                                @if($article->for_revision == '0' || $article->for_revision == '1')
+                                @if($article->status == '2' || $article->status == '3')
                                     <p><b>Status:</b>
-                                    @if($article->for_revision == '1')
+                                    @if($article->status == '2')
                                         For revision
                                     @else
                                         Rejected

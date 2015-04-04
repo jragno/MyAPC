@@ -15,7 +15,7 @@
                     <ul class="breadcrumb">
                         <li><a href="/">Home</a></li>
                         <li><a href="/organizations">Organizations</a></li>
-                        <li class="active">Organizations Name</li>
+                        <li class="active">{{$org->title}}</li>
                     </ul>               
                 </div>
             </div>
@@ -30,7 +30,7 @@
                             @include('flash::message')
                             <img src="/images/org/{{$org->image1}}" class="img-responsive"/>
                             <h2>{{$org->title}}</h2>
-                            <span class="blog-date">October 28, 2014</span>                                    
+                            <span class="blog-date">{{ date("F d, Y l", strtotime($org->created_at)) }}</span>
                             {!! html_entity_decode($org->body) !!}                            
                         </div>
                     </div>
